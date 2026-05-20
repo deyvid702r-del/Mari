@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -13,9 +14,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- CONFIGURACIÓN DE GOOGLE ---
-# ¡Recuerda poner tu nueva clave API aquí adentro!
-cliente = genai.Client(api_key="AIzaSyCsY69vUz-frJJfJvMEDEHHdMFeIqpo2WY")
+# --- CONFIGURACIÓN SEGURA DE GOOGLE ---
+# Ahora la API Key se lee en secreto desde las variables de Render
+clave_secreta = os.environ.get("AIzaSyAPhdt2zDsNCGGCbEUwXU47sV2tgiuyMQI")
+cliente = genai.Client(api_key=clave_secreta)
 
 # --- INSTRUCCIONES ESTRICTAS DE MARI ---
 instrucciones = (
@@ -38,7 +40,6 @@ class Mensaje(BaseModel):
 
 def obtener_respuesta_mari(mensaje_usuario):
     try:
-        # Se corrigió el motor al modelo activo actual de Google (gemini-1.5-flash-latest)
         response = cliente.models.generate_content(
             model='gemini-2.5-flash',
             contents=mensaje_usuario,

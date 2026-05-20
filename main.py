@@ -16,7 +16,9 @@ app.add_middleware(
 
 # --- CONFIGURACIÓN SEGURA DE GOOGLE ---
 # Ahora la API Key se lee en secreto desde las variables de Render
-clave_secreta = os.environ.get("AIzaSyAPhdt2zDsNCGGCbEUwXU47sV2tgiuyMQI")
+# --- CONFIGURACIÓN SEGURA DE GOOGLE ---
+
+clave_secreta = os.environ.get("AIzaSyAxS3xl0G3R7qqfJAvMquoZcVwoZi1vpTE")
 cliente = genai.Client(api_key=clave_secreta)
 
 # --- INSTRUCCIONES ESTRICTAS DE MARI ---

@@ -3,27 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mari (IA Fase de prueba)</title>
+    <title>Mari - Auditoría de Flota</title>
     <style>
-        /* --- ESTILOS GENERALES --- */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #0f172a; display: flex; justify-content: center; align-items: center; height: 100vh; color: #f8fafc; }
 
         .chat-container { width: 480px; height: 750px; background-color: #1e293b; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #334155; }
 
-        /* --- CABECERA FUTURISTA --- */
         .chat-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #06b6d4; box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2); }
         .header-info { display: flex; flex-direction: column; gap: 4px; }
         .header-title { font-size: 1.25rem; font-weight: 800; color: #06b6d4; text-shadow: 0 0 8px rgba(6,182,212,0.6); letter-spacing: 0.5px; }
         .header-subtitle { font-size: 0.75rem; color: #94a3b8; display: flex; align-items: center; gap: 6px; font-weight: 500; }
         .status-dot { width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
 
-        /* --- PANTALLA ROBÓTICA --- */
         .screen-bezel { padding: 6px; background-color: #334155; border-radius: 12px; border: 1px solid #475569; box-shadow: inset 0 4px 6px rgba(0,0,0,0.5), 0 4px 10px rgba(0,0,0,0.3); }
         .screen-container { width: 100px; height: 65px; background-color: #020617; border-radius: 6px; border: 1px solid #06b6d4; box-shadow: inset 0 0 15px rgba(6, 182, 212, 0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; overflow: hidden; transition: all 0.3s ease; }
         .screen-container::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); background-size: 100% 4px; pointer-events: none; z-index: 10; opacity: 0.5; }
 
-        /* Rostro y Animaciones */
         .bot-face { display: flex; justify-content: center; align-items: center; gap: 15px; z-index: 5; }
         .eye { width: 22px; height: 22px; border: 4px solid #06b6d4; border-top: none; border-radius: 0 0 25px 25px; box-shadow: 0 0 10px #06b6d4; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .thinking-text { position: absolute; bottom: 4px; font-size: 0.6rem; color: #fde047; text-shadow: 0 0 5px #fde047; opacity: 0; transition: opacity 0.3s ease; font-family: monospace; font-weight: bold; z-index: 5; }
@@ -34,7 +30,6 @@
         .thinking-active .thinking-text { opacity: 1; }
         @keyframes scanPulse { 0% { transform: scaleX(0.7); opacity: 0.4; } 100% { transform: scaleX(1.3); opacity: 1; } }
 
-        /* --- CHAT Y ZONA DE ESCRITURA --- */
         .chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
         .message { max-width: 80%; padding: 12px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .user-message { background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%); align-self: flex-end; border-bottom-right-radius: 4px; color: white; }
@@ -44,11 +39,8 @@
         .chat-input-area input { flex: 1; padding: 14px; border: 1px solid #475569; border-radius: 25px; outline: none; font-size: 1rem; padding-left: 20px; background-color: #1e293b; color: #f8fafc; transition: border 0.3s, box-shadow 0.3s; }
         .chat-input-area input:focus { border-color: #06b6d4; box-shadow: 0 0 8px rgba(6, 182, 212, 0.3); }
 
-        /* ICONO DEL MICRÓFONO Y ESTADO GRABANDO */
         .mic-icon { font-size: 1.3rem; color: #94a3b8; cursor: pointer; padding: 0 10px; transition: all 0.3s; }
         .mic-icon:hover { color: #06b6d4; transform: scale(1.1); }
-        
-        /* Cuando el micro está escuchando */
         .mic-grabando { color: #ef4444 !important; text-shadow: 0 0 10px #ef4444; animation: parpadeoMicro 1s infinite alternate; }
         @keyframes parpadeoMicro { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.2); opacity: 0.6; } }
 
@@ -61,8 +53,8 @@
     <div class="chat-container">
         <div class="chat-header" id="chatHeader">
             <div class="header-info">
-                <div class="header-title">Mari (IA Fase de prueba)</div>
-                <div class="header-subtitle"><div class="status-dot"></div> Sistemas en línea</div>
+                <div class="header-title">Panel de Seguridad Mari</div>
+                <div class="header-subtitle"><div class="status-dot"></div> Monitor de Alcoholímetros Activo</div>
             </div>
             <div class="screen-bezel">
                 <div class="screen-container">
@@ -73,12 +65,12 @@
         </div>
         
         <div class="chat-messages" id="chatBox">
-            <div class="message bot-message">¡Hola! Soy Mari. Mis sistemas de voz están activados. Haz clic en el micrófono para hablarme, o escríbeme lo que necesites.</div>
+            <div class="message bot-message">Sistemas de monitoreo en línea. Soy Mari, lista para auditar las lecturas del alcoholímetro. Usa el micrófono o escribe un comando.</div>
         </div>
         
         <div class="chat-input-area">
             <span class="mic-icon" id="btnMicrofono" title="Hablar con Mari" onclick="iniciarMicrofono()">🎙️</span>
-            <input type="text" id="userInput" placeholder="Escribe un comando..." autocomplete="off" onkeypress="evaluarEnter(event)">
+            <input type="text" id="userInput" placeholder="Ingresa un comando de seguridad..." autocomplete="off" onkeypress="evaluarEnter(event)">
             <button onclick="enviarMensaje()">Enviar</button>
         </div>
     </div>
@@ -89,67 +81,102 @@
         const chatHeader = document.getElementById('chatHeader');
         const btnMicrofono = document.getElementById('btnMicrofono');
 
-        // --- SISTEMA DE RECONOCIMIENTO DE VOZ ---
-        // Verificamos si el navegador soporta esta tecnología
+        // --- SISTEMA DE SÍNTESIS DE VOZ FEMENINA ---
+        function hablar(texto) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+
+                const mensajeVoz = new SpeechSynthesisUtterance(texto);
+                mensajeVoz.lang = 'es-ES'; 
+                mensajeVoz.rate = 1.05;     
+                mensajeVoz.pitch = 1.3; // Tono ajustado para asegurar voz femenina    
+
+                const voces = window.speechSynthesis.getVoices();
+                const vocesFemeninasConocidas = ['Helena', 'Laura', 'Dalia', 'Monica', 'Paulina', 'Luciana', 'Sabina', 'Victoria', 'Mia', 'Google español'];
+                
+                let vozElegida = voces.find(v => v.lang.includes('es') && vocesFemeninasConocidas.some(nombre => v.name.includes(nombre)));
+
+                if (!vozElegida) {
+                    vozElegida = voces.find(v => v.lang.includes('es') && !v.name.includes('Pablo') && !v.name.includes('Diego') && !v.name.includes('Jorge'));
+                }
+
+                if (vozElegida) {
+                    mensajeVoz.voice = vozElegida;
+                }
+
+                window.speechSynthesis.speak(mensajeVoz);
+            } else {
+                console.error("Este navegador no soporta salida de voz.");
+            }
+        }
+
+        // --- SALUDO INICIAL ---
+        let yaSaludo = false;
+        function activarSaludoInicial() {
+            if (!yaSaludo) {
+                hablar("Sistemas de monitoreo en línea. Soy Mari, lista para auditar las lecturas del alcoholímetro.");
+                yaSaludo = true;
+                document.removeEventListener('click', activarSaludoInicial);
+            }
+        }
+        document.addEventListener('click', activarSaludoInicial);
+
+
+        // --- RECONOCIMIENTO DE VOZ ---
         const ReconocimientoVoz = window.SpeechRecognition || window.webkitSpeechRecognition;
         let reconocimiento;
 
         if (ReconocimientoVoz) {
             reconocimiento = new ReconocimientoVoz();
-            reconocimiento.lang = 'es-ES'; // Idioma español
-            reconocimiento.continuous = false; // Se apaga cuando terminas de hablar
+            reconocimiento.lang = 'es-ES'; 
+            reconocimiento.continuous = false; 
             reconocimiento.interimResults = false;
 
-            // Qué pasa cuando empieza a escuchar
             reconocimiento.onstart = function() {
                 btnMicrofono.classList.add('mic-grabando');
                 userInput.placeholder = "Escuchando...";
             };
 
-            // Qué pasa cuando termina de escuchar
             reconocimiento.onspeechend = function() {
                 reconocimiento.stop();
                 btnMicrofono.classList.remove('mic-grabando');
-                userInput.placeholder = "Escribe un comando...";
+                userInput.placeholder = "Ingresa un comando de seguridad...";
             };
 
-            // Qué pasa cuando logra traducir tu voz a texto
             reconocimiento.onresult = function(event) {
                 const transcripcion = event.results[0][0].transcript;
-                userInput.value = transcripcion; // Escribe el texto en la barra
-                enviarMensaje(); // Envía el mensaje automáticamente (puedes borrar esta línea si prefieres darle a Enviar manualmente)
+                userInput.value = transcripcion; 
+                enviarMensaje(); 
             };
 
-            // Por si ocurre un error (no hay micro, o no diste permiso)
             reconocimiento.onerror = function(event) {
-                console.error("Error en el micrófono:", event.error);
                 btnMicrofono.classList.remove('mic-grabando');
                 userInput.placeholder = "Error al escuchar. Intenta de nuevo.";
-                setTimeout(() => userInput.placeholder = "Escribe un comando...", 3000);
+                setTimeout(() => userInput.placeholder = "Ingresa un comando de seguridad...", 3000);
             };
         } else {
-            console.log("Tu navegador no soporta voz.");
-            btnMicrofono.style.display = 'none'; // Oculta el micro si el navegador no sirve
+            btnMicrofono.style.display = 'none'; 
         }
 
-        // Función que se activa al hacer clic en el icono
         function iniciarMicrofono() {
             if (reconocimiento) {
+                yaSaludo = true; 
                 reconocimiento.start();
             } else {
-                alert("Tu navegador no soporta esta función. Usa Google Chrome o Edge.");
+                alert("Tu navegador no soporta esta función. Usa Edge o Chrome.");
             }
         }
-        // ----------------------------------------
 
+
+        // --- COMUNICACIÓN CON EL SERVIDOR RENDER ---
         async function enviarMensaje() {
             const texto = userInput.value.trim();
             if (texto === "") return;
 
+            yaSaludo = true; 
             agregarMensajeAConversacion(texto, 'user-message');
             userInput.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
-
             chatHeader.classList.add('thinking-active');
 
             try {
@@ -161,10 +188,13 @@
                 
                 const data = await response.json();
                 agregarMensajeAConversacion(data.respuesta, 'bot-message');
+                hablar(data.respuesta); 
                 
             } catch (error) {
                 console.error("Error:", error);
-                agregarMensajeAConversacion("Hubo un error de conexión con mi núcleo lógico.", 'bot-message');
+                const msgError = "Error crítico de conexión con el servidor de la flota.";
+                agregarMensajeAConversacion(msgError, 'bot-message');
+                hablar(msgError);
             } finally {
                 chatHeader.classList.remove('thinking-active');
                 chatBox.scrollTop = chatBox.scrollHeight;
@@ -180,6 +210,10 @@
 
         function evaluarEnter(event) {
             if (event.key === "Enter") enviarMensaje();
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.getVoices();
         }
     </script>
 </body>

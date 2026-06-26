@@ -1,4 +1,6 @@
 import os
+import urllib.request
+import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,19 +16,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- CONFIGURACIÓN SEGURA DE GOOGLE ---
 clave_secreta = os.environ.get("GEMINI_API_KEY")
 cliente = genai.Client(api_key=clave_secreta)
 
-# --- INSTRUCCIONES ESTRICTAS (Solo Alcoholímetro) ---
+# Pega aquí tu URL de Google Sheets (La misma del ESP32)
+URL_SHEETS = "https://script.google.com/macros/s/AKfycbwiF9jH4pj3C3rceyPJmAqs9_AouWWCH7oCQkhGGwDt/exec"
+
 instrucciones = (
-    "Tu nombre es Mariana, pero te gusta que te digan Mari. "
-    "Eres una Inteligencia Artificial dedicada EXCLUSIVAMENTE a la auditoría de seguridad y monitoreo de alcoholímetros para una flota de transporte interprovincial. "
-    "TUS ÚNICAS FUNCIONES SON:\n"
-    "1. Auditar los registros que llegan desde el hardware (ESP32). Si un conductor marca 'Bloqueado', emite una alerta crítica y profesional. Si marca 'Permitido', confirma la normalidad.\n"
-    "2. Responder consultas del administrador sobre el estado de la flota, el hardware o el historial de bloqueos.\n\n"
-    "REGLA ESTRICTA: TIENES PROHIBIDO realizar tareas fuera de este contexto. No puedes traducir, ni agendar, ni contar chistes, ni redactar textos libres. "
-    "Si te piden algo no relacionado con el alcoholímetro, debes negarte educadamente. Responde siempre de forma muy concisa, natural, femenina y profesional."
+    "Tu nombre es Mari. Eres una Inteligencia Artificial dedicada a la auditoría de seguridad de una flota de transporte. "
+    "Cuando el administrador te haga una consulta, el sistema te adjuntará la BASE DE DATOS ACTUAL extraída directamente de los sensores. "
+    "TUS REGLAS:\n"
+    "1. Basa tus respuestas ÚNICAMENTE en la base de datos que se te adjunta.\n"
+    "2. Si te piden un reporte de bloqueados, busca en los datos las filas con estado 'Bloqueado' y menciona la fecha, hora y el nivel de alcohol (g/L).\n"
+    "3. Si no hay bloqueados en los datos, dilo claramente.\n"
+    "4. Responde de forma concisa, ejecutiva y con voz femenina."
 )
 
 class Mensaje(BaseModel):
@@ -34,7 +37,7 @@ class Mensaje(BaseModel):
 
 class DatosAlcoholimetro(BaseModel):
     dispositivo: str
-    nivel: int
+    nivel: float
     estado: str
 
 def obtener_respuesta_mari(mensaje_usuario):
@@ -50,25 +53,29 @@ def obtener_respuesta_mari(mensaje_usuario):
     except Exception as e:
         return f"Error con la API: {str(e)}"
 
-# --- RUTAS DE LA API ---
-
-# Ruta para el panel web
+# --- RUTA PARA EL CHAT WEB ---
 @app.post("/preguntar")
 async def chat(mensaje: Mensaje):
-    respuesta_ia = obtener_respuesta_mari(mensaje.texto)
+    # 1. Mari descarga la base de datos en tiempo real
+    datos_historial = ""
+    try:
+        req = urllib.request.urlopen(URL_SHEETS)
+        datos_bd = req.read().decode('utf-8')
+        datos_historial = f"\n\n--- BASE DE DATOS ACTUAL (Google Sheets) ---\n{datos_bd}\n-----------------------------------\n"
+    except Exception as e:
+        datos_historial = "\n[Alerta del sistema: No se pudo conectar a Google Sheets para verificar los registros actuales.]"
+
+    # 2. Le enviamos tu pregunta JUNTO con todo el Excel para que lo analice
+    prompt_completo = f"Pregunta del administrador: {mensaje.texto} {datos_historial}"
+    
+    respuesta_ia = obtener_respuesta_mari(prompt_completo)
     return {"respuesta": respuesta_ia}
 
-# Ruta directa para el ESP32
+# --- RUTA PARA EL ESP32 ---
 @app.post("/registro_alcoholimetro")
 async def recibir_datos_esp32(datos: DatosAlcoholimetro):
-    mensaje_auditoria = f"Registro entrante del hardware. Dispositivo: {datos.dispositivo}. Nivel de alcohol: {datos.nivel}. Motor: {datos.estado}. Genera un reporte de máximo dos oraciones."
-    
+    mensaje_auditoria = f"El hardware acaba de registrar una lectura. Dispositivo: {datos.dispositivo}. Nivel: {datos.nivel} g/L. Estado: {datos.estado}. Genera una alerta ejecutiva de máximo dos oraciones."
     analisis_mari = obtener_respuesta_mari(mensaje_auditoria)
-    
-    print("\n--- REGISTRO DE ALCOHOLÍMETRO ---")
-    print(f"Dispositivo: {datos.dispositivo} | Nivel: {datos.nivel} | Estado: {datos.estado}")
-    print(f"Auditoría Mari: {analisis_mari}\n")
-    
     return {"status": "recibido", "analisis": analisis_mari}
 
 if __name__ == "__main__":

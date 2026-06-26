@@ -20,7 +20,7 @@ clave_secreta = os.environ.get("GEMINI_API_KEY")
 cliente = genai.Client(api_key=clave_secreta)
 
 # Pega aquí tu URL de Google Sheets (La misma del ESP32)
-URL_SHEETS = "https://script.google.com/macros/s/AKfycbwiF9jH4pj3C3rceyPJmAqs9_AouWWCH7oCQkhGGwDt/dev"
+URL_SHEETS = "https://docs.google.com/spreadsheets/d/153SyU2r20WgFcZQq0Me-ZiLQVTkcw4iwhczdmH75VlY/edit?usp=sharing"
 
 instrucciones = (
     "Tu nombre es Mari. Eres una Inteligencia Artificial dedicada a la auditoría de seguridad de una flota de transporte. "
